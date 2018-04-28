@@ -8,6 +8,8 @@ struct substring {
   int len;
 };
 
+struct substring *lss(char *a, char *b);
+
 int main(int argc, char **argv) {
   int err, numlines = atoi(argv[1]);
   FILE *fd;
@@ -27,28 +29,34 @@ int main(int argc, char **argv) {
   char b[6] = "babca\0";
   char c[6] = "abcba\0";
 
-  printf("%s\n", lss(a, b));
-  printf("%s\n", lss(b, c));
-  printf("%s\n", lss(a, c));
+  struct substring *ss = lss(a, b);
+  printf("%d: %s\n", ss->len, ss->s);
+  ss = lss(a, c);
+  printf("%d: %s\n", ss->len, ss->s);
+  ss = lss(b, c);
+  printf("%d: %s\n", ss->len, ss->s);
 }
 
-char *lss(char *a, char *b) {
+struct substring *lss(char *a, char *b) {
   char *ta = a, *tb = b, *ea = a + strlen(a), *eb = b + strlen(b);
   char len;
-  struct substring lss = malloc(sizeof(struct substring));
-  lss.len = 0;
+  struct substring *lss = malloc(sizeof(struct substring));
+  lss->len = 0;
   lss->s = NULL;
 
   while(ta < ea) {
     while(tb < b) {
       len = 0;
-      while(*ta == *tb && len > lss.len) {
+      while(*ta && *tb && *ta == *tb && len >= lss->len) {
         len++;
         ta++;
-        tb++
+        tb++;
       }
       ta -= len + 1;
       tb -= len + 1;
+      lss->len = len;
+      lss->s = ta - 1;
     }
-  }     
+  }
+  return lss;
 }
