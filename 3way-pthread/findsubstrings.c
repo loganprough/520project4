@@ -35,12 +35,14 @@ int main(int argc, char **argv) {
 char *lss(char *a, char *b) {
   char *ta = a, *tb = b, *ea = a + strlen(a), *eb = b + strlen(b);
   char len;
-  struct substring = malloc(sizeof(struct substring));
+  struct substring lss = malloc(sizeof(struct substring));
+  lss.len = 0;
+  lss->s = NULL;
 
   while(ta < ea) {
     while(tb < b) {
       len = 0;
-      while(*ta == *tb) {
+      while(*ta == *tb && len > lss.len) {
         len++;
         ta++;
         tb++
