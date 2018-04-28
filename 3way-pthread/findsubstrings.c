@@ -24,45 +24,39 @@ int main(int argc, char **argv) {
   fclose(fd);
 
   //for(int i = 0; i < numlines; i++) printf("%s\n", line[i]);
-  
-  char a[6] = "ababc\0";
-  char b[6] = "babca\0";
-  char c[6] = "abcba\0";
 
-  struct substring *ss = lss(a, b);
-  printf("%d: %s\n", ss->len, ss->s);
-  fflush(stdout);
-  //ss = lss(a, c);
-  //printf("%d: %s\n", ss->len, ss->s);
-  //ss = lss(b, c);
-  //printf("%d: %s\n", ss->len, ss->s);
+  struct substring *ss;
+  for(int i = 0; i < numlines - 1; i++) {
+    ss = lss(line[i], line[i+1]);
+    printf("%d-%d: %.*s\n", i, i+1, ss->len, ss->s);
+  }
 }
 
 struct substring *lss(char *a, char *b) {
-  char *ea = a + strlen(a) - 1, *eb = b + strlen(b) - 1;
-  char len;
+  char *ea = a + strlen(a) - 1, *eb = b + strlen(b) - 1, *tb = b;
+  int len;
   struct substring *lss = malloc(sizeof(struct substring));
   lss->len = 0;
   lss->s = NULL;
 
-  while(a++ < ea) {
-    printf("Outmost while\n");
-    fflush(stdout);
-    while(b++ < eb) {
-      printf("Middle while\n");
-      fflush(stdout);
+  a--;
+  while(++a <= ea) {
+    tb = b - 1;
+    while(++tb <= eb) {
       len = 0;
-      while(*a != 0 && *b != 0 && *a == *b && len >= lss->len) {
-        printf("Innermost while\n");
-        fflush(stdout);
+      while(a <= ea && tb <= eb && *a == *tb) {
         len++;
         a++;
-        b++;
+        tb++;
       }
-      a -= len + 1;
-      b -= len + 1;
-      lss->len = len;
-      lss->s = a - 1;
+      if (len > 0) {
+        a -= len;
+        tb -= len;
+        if (len > lss->len) {
+          lss->len = len;
+          lss->s = a;
+        }
+      }
     }
   }
   return lss;
