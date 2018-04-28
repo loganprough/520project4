@@ -31,31 +31,38 @@ int main(int argc, char **argv) {
 
   struct substring *ss = lss(a, b);
   printf("%d: %s\n", ss->len, ss->s);
-  ss = lss(a, c);
-  printf("%d: %s\n", ss->len, ss->s);
-  ss = lss(b, c);
-  printf("%d: %s\n", ss->len, ss->s);
+  fflush(stdout);
+  //ss = lss(a, c);
+  //printf("%d: %s\n", ss->len, ss->s);
+  //ss = lss(b, c);
+  //printf("%d: %s\n", ss->len, ss->s);
 }
 
 struct substring *lss(char *a, char *b) {
-  char *ta = a, *tb = b, *ea = a + strlen(a), *eb = b + strlen(b);
+  char *ea = a + strlen(a) - 1, *eb = b + strlen(b) - 1;
   char len;
   struct substring *lss = malloc(sizeof(struct substring));
   lss->len = 0;
   lss->s = NULL;
 
-  while(ta < ea) {
-    while(tb < b) {
+  while(a++ < ea) {
+    printf("Outmost while\n");
+    fflush(stdout);
+    while(b++ < eb) {
+      printf("Middle while\n");
+      fflush(stdout);
       len = 0;
-      while(*ta && *tb && *ta == *tb && len >= lss->len) {
+      while(*a != 0 && *b != 0 && *a == *b && len >= lss->len) {
+        printf("Innermost while\n");
+        fflush(stdout);
         len++;
-        ta++;
-        tb++;
+        a++;
+        b++;
       }
-      ta -= len + 1;
-      tb -= len + 1;
+      a -= len + 1;
+      b -= len + 1;
       lss->len = len;
-      lss->s = ta - 1;
+      lss->s = a - 1;
     }
   }
   return lss;
