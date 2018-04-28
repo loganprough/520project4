@@ -68,9 +68,9 @@ void main()
     }
 
     fclose(fptr);
-    for(i=0; i<totalLines; i++){
-        printf("%s", FileLines[i]); fflush(NULL);
-    }
+    // for(i=0; i<totalLines; i++){
+    //     printf("%s", FileLines[i]); fflush(NULL);
+    // }
     for(i=0; i<totalLines; i++ ){
         if(FileLines[i]) free(FileLines[i]);
     }
