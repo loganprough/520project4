@@ -1,10 +1,13 @@
+// Finds common substrings from file using pthreads
+// and parameters defined below for LINES and NUM_THREADS
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
 
-#define LINES 10000
-#define NUM_THREADS 8
+#define LINES 1000000
+#define NUM_THREADS 16
 
 struct substring {
   char *s;

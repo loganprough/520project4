@@ -1,38 +1,45 @@
-// Finds substrings in the file for number of lines
-// given as command line argument. Has no parallelism
+// Finds common substrings from file using OpenMP 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
+
+#define LINES 1000000
+#define NUM_THREADS 16
 
 struct substring {
   char *s;
   int len;
-};
+} *ss[LINES];
 
 struct substring *lss(char *a, char *b);
+void *fss(void *start);
+
+int chunkSize;
+char **line;
 
 int main(int argc, char **argv) {
-  int err, numlines = atoi(argv[1]);
+  long tids[NUM_THREADS];
+  void *ret;
+  pthread_attr_t attr;
+  int err; 
   FILE *fd;
-  char **line = (char **)malloc(numlines * sizeof(char *));
+  line = (char **)malloc(LINES * sizeof(char *));
+  chunkSize = LINES / NUM_THREADS;
 
   // Inspired by find_keys.c in Dr. Andresen's home directory
   fd = fopen("/homes/dan/625/wiki_dump.txt", "r");
-  for(int i = 0; i < numlines && err != EOF; i++) {
+  for(int i = 0; i < LINES && err != EOF; i++) {
     line[i] = (char *)malloc(10000 * sizeof(char));
     err = fscanf(fd, "%[^\n]\n", line[i]);
   }
   fclose(fd);
 
-  //for(int i = 0; i < numlines; i++) printf("%s\n", line[i]);
-
-  struct substring *ss;
-  for(int i = 0; i < numlines - 1; i++) {
-    ss = lss(line[i], line[i+1]);
-    printf("%d-%d: %.*s\n", i, i+1, ss->len, ss->s);
-  }
+#pragma omp parallel for
+  for(int i = 0; i < LINES - 1; i++) ss[i] = lss(line[i], line[i+1]);
+  
+  // Print results
+  for(int i = 0; i < LINES - 1; i++) printf("%d-%d: %.*s\n", i, i+1, ss[i]->len, ss[i]->s);
 }
 
 struct substring *lss(char *a, char *b) {
