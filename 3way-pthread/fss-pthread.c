@@ -6,7 +6,7 @@
 #include <string.h>
 #include <pthread.h>
 
-#define LINES 1000000
+#define LINES 100
 #define NUM_THREADS 16
 
 struct substring {
