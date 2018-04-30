@@ -21,7 +21,7 @@ char **line;
 int main(int argc, char **argv) {
   long tids[NUM_THREADS];
   void *ret;
-  pthread_attr_t attr;
+  // pthread_attr_t attr;
   int err; 
   FILE *fd;
   line = (char **)malloc(LINES * sizeof(char *));
