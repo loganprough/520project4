@@ -54,12 +54,12 @@ int main(int argc, char **argv) {
   
   MPI_Bcast(line, LINES * 10000, MPI_CHAR, 0, MPI_COMM_WORLD);
 
-  for(int i = chunksize * rank; i < chunkSize - 1; i++) ss[i] = lss(line[i], line[i+1]);
+  for(int i = chunksize * rank; i < chunkSize * (rank + 1) - 1; i++) ss[i] = lss(line[i], line[i+1]);
   //
   // Need to collect char* and len within substring from all threads
   //
   MPI_Barrior(MPI_COMM_WORLD);
-  for(int i = chunksize * rank; i < chunkSize - 1; i++) {
+  for(int i = chunksize * rank; i < chunkSize * (rank + 1) - 1; i++) {
     MPI_Gather(ss[i]->s, 1, MPI_CHAR, 
       ss[i]->s, 1, MPI_CHAR, 
       0, MPI_COMM_WORLD);
