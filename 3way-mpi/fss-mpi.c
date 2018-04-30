@@ -58,7 +58,17 @@ int main(int argc, char **argv) {
   //
   // Need to collect char* and len within substring from all threads
   //
-  MPI_Reduce(ss->, char_counts, ALPHABET_SIZE, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+  MPI_Barrior(MPI_COMM_WORLD);
+  for(int i = chunksize * rank; i < chunkSize - 1; i++) {
+    MPI_Gather(ss[i]->s, 1, MPI_CHAR, 
+      ss[i]->s, 1, MPI_CHAR, 
+      0, MPI_COMM_WORLD);
+
+    MPI_Gather(ss[i]->len, 1, MPI_INT, 
+      ss[i]->len, 1, MPI_INT, 
+      0, MPI_COMM_WORLD);
+  }
+  MPI_Barrior(MPI_COMM_WORLD);
 
 
   // Print results
